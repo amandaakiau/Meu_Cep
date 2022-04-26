@@ -1,44 +1,41 @@
 import React, { useState } from 'react'
-import { StyleSheet,Text, Image, TextInput, TouchableOpacity} from 'react-native'
+import { StyleSheet,Text, Image, TextInput, TouchableOpacity, Button} from 'react-native'
 
 export default function Principal() {
-    const [cep, setCep] = useState('');
-    
-    const checkCEP = (e) => {
-        const cep = e.target.value.replace(/\D/g, '');
-        console.log(cep);
+    const [cep, setCep] = useState('')
+    const [endereco, setEndereco] = useState(null)
+
+
+    const buscarCEP = () => {
         fetch(`https://viacep.com.br/ws/${cep}/json/`)
-            .then(res => res.json()).then(data => {
-                console.log(data);
-
-            });
+        .then(resposta => resposta.json())
+        .then(obj => setEndereco(obj))
+        .catch(erro => alert(erro))
     }
-
 
     return <>
 
 
-    <Text style={estilos.Titulo}>Indique o seu CEP</Text>
-    <TextInput color='#ffffff' placeholder='CEP' placeholderTextColor={'#ffffff'} style={estilos.textInput} onChangeText={text=>setCep(text)} onBlur={checkCEP} />
+    <Text style={estilos.Titulo}>Digite o CEP</Text>
+    <TextInput color='#ffffff' placeholder='CEP' placeholderTextColor={'#ffffff'} style={estilos.textInput} onChangeText={input=>setCep(input)} />
  
 
-    <TouchableOpacity style={estilos.botaoBuscaCep}>
-        <Text style={estilos.botao}>Buscar CEP</Text>
-    </TouchableOpacity> 
 
 
-    <Text style={estilos.dadosCEP}> </Text>
+    <Button title="Buscar endereço" onPress={buscarCEP}/>
+
+
+    {endereco != null && (
+    
+            <Text style={estilos.texto}>CEP : {JSON.stringify(endereco)} </Text>
+        
+    )}
+
 
     </> 
 }
 
 const estilos = StyleSheet.create({
-
-    botao:{
-        color:'#96A7AF',
-        fontSize: 16,
-    
-    },
 
 
     Titulo:{
@@ -50,6 +47,7 @@ const estilos = StyleSheet.create({
         lineHeight: 21,
         color: '#96A7AF'
     },
+
 
     textInput:{  //CEP input
         position: 'absolute',
@@ -63,26 +61,20 @@ const estilos = StyleSheet.create({
     
     },
 
-    botaoBuscaCep:{
-        position:'absolute',
-        width: '30%',
-        height: '4.5%',
-        top: '40%',
-        backgroundColor: '#286053',
-        alignItems: 'center',
-        borderRadius: 12,
-        justifyContent: 'center'
-    },
-
-    dadosCEP:{
-        position: 'absolute',    
-        top: '50%',
+    texto:{
+        position: 'absolute',
+        left: '3%',
+        right: '3%',
+        width: 'auto',    
+        top: '57.7%',
         fontStyle: 'normal',
         fontWeight: 'normal',
-        fontSize: 16,
-        lineHeight: 21,
+        fontSize: 14,
+        lineHeight: 20,
         color: '#96A7AF'
+
     },
 
+    
 
 })
